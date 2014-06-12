@@ -33,6 +33,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -152,7 +153,11 @@ public class MainActivity extends Activity {
         
         // Handle Navigation Drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerShadow(R.drawable.navbar_shadow, Gravity.LEFT);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        
+        mDrawerList.setAdapter(new DrawerListAdapter(MainActivity.this));
+        
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
