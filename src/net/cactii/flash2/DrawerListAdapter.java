@@ -46,13 +46,14 @@ public class DrawerListAdapter extends BaseAdapter {
 			View view = inflater.inflate(R.layout.drawerhighbrightness, null);
 			
 			CompoundButton box = (CompoundButton) view.findViewById(R.id.highBrightnessCheckbox);
-			box.setSelected(act.mPrefs.getBoolean("bright", false));
+			box.setChecked(act.mPrefs.getBoolean("bright", false));
 			box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 				@Override
 				public void onCheckedChanged(CompoundButton arg0, boolean on) {
 					// TODO Auto-generated method stub
 					if(on)act.openBrightDialog((Switch) arg0);
+					else act.mPrefs.edit().putBoolean("bright", false).commit();
 					
 				}
 				
