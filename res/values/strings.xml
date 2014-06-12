@@ -37,4 +37,6 @@
 
     <string name="not_torch_title">Torch on</string>
     <string name="not_torch_toggle">Turn torch off</string>
+    <string name="drawer_open">Open navigation panel</string>
+    <string name="drawer_close">Close navigation panel</string>
 </resources>
