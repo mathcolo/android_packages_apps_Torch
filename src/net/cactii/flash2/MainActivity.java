@@ -43,8 +43,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 
 public class MainActivity extends Activity {
 
@@ -58,7 +61,7 @@ public class MainActivity extends Activity {
     private boolean mTorchOn;
 
     // Preferences
-    private SharedPreferences mPrefs;
+    public SharedPreferences mPrefs;
 
     private boolean mHasBrightSetting = false;
 
@@ -214,7 +217,7 @@ public class MainActivity extends Activity {
             if (isChecked && !mPrefs.contains("bright")) {
                 // reverse reverse!
                 menuItem.setChecked(!isChecked);
-                openBrightDialog();
+                openBrightDialog(null);
             } else if (isChecked) {
                 mBright = true;
                 mPrefs.edit().putBoolean("bright", true).commit();
@@ -256,7 +259,7 @@ public class MainActivity extends Activity {
                 .show();
     }
 
-    private void openBrightDialog() {
+    public void openBrightDialog(final CompoundButton ref) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.brightwarn, null);
 
@@ -266,6 +269,10 @@ public class MainActivity extends Activity {
                 .setNegativeButton(R.string.brightwarn_negative, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
+                    	mBright = false;
+                    	mPrefs.edit().putBoolean("bright", false).commit();
+                    	
+                    	if(ref != null)ref.setChecked(false);
                     }
                 })
                 .setPositiveButton(R.string.brightwarn_accept, new DialogInterface.OnClickListener() {
@@ -273,6 +280,8 @@ public class MainActivity extends Activity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         mBright = true;
                         mPrefs.edit().putBoolean("bright", true).commit();
+                        
+                        if(ref != null)ref.setChecked(true);
                     }
                 })
                 .show();

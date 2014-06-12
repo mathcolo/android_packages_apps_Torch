@@ -2,21 +2,26 @@ package net.cactii.flash2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.Switch;
 
 public class DrawerListAdapter extends BaseAdapter {
 	
 	private static LayoutInflater inflater = null;
-	private Activity act;
+	private MainActivity act;
 
 	public DrawerListAdapter(Activity act) {
-		this.act = act;
+		this.act = (MainActivity) act;
 		inflater = (LayoutInflater) act.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
@@ -39,6 +44,20 @@ public class DrawerListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if(position == 0) {
 			View view = inflater.inflate(R.layout.drawerhighbrightness, null);
+			
+			CompoundButton box = (CompoundButton) view.findViewById(R.id.highBrightnessCheckbox);
+			box.setSelected(act.mPrefs.getBoolean("bright", false));
+			box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton arg0, boolean on) {
+					// TODO Auto-generated method stub
+					if(on)act.openBrightDialog((Switch) arg0);
+					
+				}
+				
+			});
+			
 			return view;
 		}
 		
