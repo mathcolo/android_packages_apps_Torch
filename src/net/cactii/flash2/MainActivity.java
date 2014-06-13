@@ -193,38 +193,16 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        MenuItem brightness = menu.findItem(R.id.action_high_brightness);
-        if (mHasBrightSetting) {
-            brightness.setChecked(mBright);
-        } else {
-            brightness.setVisible(false);
-        }
-        return true;
+        return false;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.action_about) {
-            openAboutDialog();
-            return true;
-        } else if (menuItem.getItemId() == R.id.action_high_brightness) {
-            boolean isChecked = false;
-            menuItem.setChecked(isChecked = !menuItem.isChecked());
-            if (isChecked && !mPrefs.contains("bright")) {
-                // reverse reverse!
-                menuItem.setChecked(!isChecked);
-                openBrightDialog(null);
-            } else if (isChecked) {
-                mBright = true;
-                mPrefs.edit().putBoolean("bright", true).commit();
-            } else {
-                mBright = false;
-                mPrefs.edit().putBoolean("bright", false).commit();
-            }
+    	
+    	if (mDrawerToggle.onOptionsItemSelected(menuItem)) {
             return true;
         }
+   
         return false;
     }
 
