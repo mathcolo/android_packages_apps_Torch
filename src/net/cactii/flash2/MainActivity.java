@@ -43,6 +43,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -158,6 +160,18 @@ public class MainActivity extends Activity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         
         mDrawerList.setAdapter(new DrawerListAdapter(MainActivity.this));
+        mDrawerList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				if(arg2 == 2) {
+					openAboutDialog();
+				}
+				
+			}
+        	
+        });
         
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,

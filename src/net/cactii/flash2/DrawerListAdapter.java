@@ -27,7 +27,7 @@ public class DrawerListAdapter extends BaseAdapter {
 	
 	@Override
 	public int getCount() {
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class DrawerListAdapter extends BaseAdapter {
 			return view;
 		}
 		
-		if(position == 1)
+		else if(position == 1)
 		{
 			View view = inflater.inflate(R.layout.drawerstrobe, null);
 			SeekBar seekbar = (SeekBar) view.findViewById(R.id.seekBar1);
@@ -89,6 +89,12 @@ public class DrawerListAdapter extends BaseAdapter {
 	        });
 			return view;
 		}
+		
+		else if(position == 2) {
+			View view = inflater.inflate(R.layout.drawerabout, null);
+			return view;
+		}
+		
 		return null;
 	}
 
