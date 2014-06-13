@@ -95,6 +95,7 @@ public class DrawerListAdapter extends BaseAdapter {
 		
 		else if(position == 2) {
 			View view = inflater.inflate(R.layout.drawerabout, null);
+			view.setTag("About");
 			return view;
 		}
 		
