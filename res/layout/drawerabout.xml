@@ -15,8 +15,8 @@
         android:fontFamily="sans-serif-light"
         android:paddingRight="10dp"
         android:text="About"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:textSize="22sp" />
 
 </RelativeLayout>

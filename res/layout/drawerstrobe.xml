@@ -15,8 +15,8 @@
         android:paddingRight="10dp"
         android:text="@string/strobe"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:textColorLink="@android:color/holo_blue_light"
         android:textSize="22sp" />
 
