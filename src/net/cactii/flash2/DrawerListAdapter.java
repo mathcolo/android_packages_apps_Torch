@@ -68,7 +68,7 @@ public class DrawerListAdapter extends BaseAdapter {
 		else if(position == 1)
 		{
 			View view = inflater.inflate(R.layout.drawerstrobe, null);
-			SeekBar seekbar = (SeekBar) view.findViewById(R.id.seekBar1);
+			SeekBar seekbar = (SeekBar) view.findViewById(R.id.slider);
 	        seekbar.setOnTouchListener(new ListView.OnTouchListener() 
 	        {
 

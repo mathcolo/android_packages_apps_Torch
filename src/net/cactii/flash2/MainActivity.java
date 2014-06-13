@@ -48,6 +48,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -59,6 +61,15 @@ public class MainActivity extends Activity {
 
     private boolean mBright;
     private boolean mTorchOn;
+
+    // Strobe frequency slider.    
+    private SeekBar mSlider;   
+
+    // Period of strobe, in milliseconds    
+    private int mStrobePeriod;   
+
+    // Label showing strobe frequency    
+    private TextView mStrobeLabel; 
 
     // Preferences
     public SharedPreferences mPrefs;
@@ -133,7 +144,10 @@ public class MainActivity extends Activity {
         mBackgroundShape = (ImageView) findViewById(R.id.bg);
         mLightbulb = (ImageView) findViewById(R.id.lightbulb);
         mLightbulbOn = (ImageView) findViewById(R.id.lightbulb_on);
+        mStrobeLabel = (TextView) findViewById(R.id.strobeTimeLabel);
+        mSlider = (SeekBar) findViewById(R.id.slider);
 
+        mStrobePeriod = 100;
         mTorchOn = false;
 
         mWidgetProvider = TorchWidgetProvider.getInstance();
