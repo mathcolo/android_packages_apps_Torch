@@ -27,7 +27,8 @@ public class DrawerListAdapter extends BaseAdapter {
 	
 	@Override
 	public int getCount() {
-		return 3;
+		if(act.getResources().getBoolean(R.bool.hasHighBrightness))return 3;
+		return 2;
 	}
 
 	@Override
@@ -42,6 +43,8 @@ public class DrawerListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		if(this.getCount() == 2)position++;
+		
 		if(position == 0) {
 			View view = inflater.inflate(R.layout.drawerhighbrightness, null);
 			
