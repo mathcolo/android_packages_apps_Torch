@@ -2,6 +2,7 @@ package net.cactii.flash2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,12 +14,14 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Switch;
 
 public class DrawerListAdapter extends BaseAdapter {
 	
 	private static LayoutInflater inflater = null;
 	private MainActivity act;
+	private int mStrobePeriod;
 
 	public DrawerListAdapter(Activity act) {
 		this.act = (MainActivity) act;
@@ -69,6 +72,30 @@ public class DrawerListAdapter extends BaseAdapter {
 		{
 			View view = inflater.inflate(R.layout.drawerstrobe, null);
 			SeekBar seekbar = (SeekBar) view.findViewById(R.id.slider);
+			
+			mStrobePeriod = 100;
+	
+			seekbar.setProgress(400 - mStrobePeriod);		
+
+			seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {		
+			@Override		
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {		
+				updateStrobePeriod(Math.max(20, 401 - progress));		
+
+				Intent intent = new Intent("net.cactii.flash2.SET_STROBE");		
+				intent.putExtra("period", mStrobePeriod);	
+				act.sendBroadcast(intent);		
+			}		
+
+			@Override		
+			public void onStartTrackingTouch(SeekBar seekBar) {		
+			}		
+
+			@Override		
+			public void onStopTrackingTouch(SeekBar seekBar) {		
+			}	            
+			});
+			
 	        seekbar.setOnTouchListener(new ListView.OnTouchListener() 
 	        {
 
@@ -100,6 +127,10 @@ public class DrawerListAdapter extends BaseAdapter {
 		}
 		
 		return null;
+	}
+	
+	private void updateStrobePeriod(int period) { 
+		//TODO
 	}
 
 }
