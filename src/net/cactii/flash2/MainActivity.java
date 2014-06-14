@@ -60,6 +60,9 @@ public class MainActivity extends Activity {
 
     private boolean mBright;
     private boolean mTorchOn;
+    
+    // Period of strobe, in milliseconds
+    public int mStrobePeriod;
 
     // Preferences
     public SharedPreferences mPrefs;

@@ -21,7 +21,6 @@ public class DrawerListAdapter extends BaseAdapter {
 	
 	private static LayoutInflater inflater = null;
 	private MainActivity act;
-	private int mStrobePeriod;
 
 	public DrawerListAdapter(Activity act) {
 		this.act = (MainActivity) act;
@@ -73,9 +72,21 @@ public class DrawerListAdapter extends BaseAdapter {
 			View view = inflater.inflate(R.layout.drawerstrobe, null);
 			SeekBar seekbar = (SeekBar) view.findViewById(R.id.slider);
 			
-			mStrobePeriod = 100;
+			//act.mStrobePeriod = 100;
+			
+			final boolean isStrobing = act.mPrefs.getBoolean("strobe", false);
+			CompoundButton switchStrobe = (CompoundButton) view.findViewById(R.id.switchStrobe);
+			switchStrobe.setChecked(isStrobing);
+			switchStrobe.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					act.mPrefs.edit().putBoolean("strobe", isChecked).commit();
+				}
+				
+			});
 	
-			seekbar.setProgress(400 - mStrobePeriod);		
+			seekbar.setProgress(400 - act.mStrobePeriod);		
 
 			seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {		
 			@Override		
@@ -83,7 +94,7 @@ public class DrawerListAdapter extends BaseAdapter {
 				updateStrobePeriod(Math.max(20, 401 - progress));		
 
 				Intent intent = new Intent("net.cactii.flash2.SET_STROBE");		
-				intent.putExtra("period", mStrobePeriod);	
+				intent.putExtra("period", act.mStrobePeriod);	
 				act.sendBroadcast(intent);		
 			}		
 
@@ -129,8 +140,8 @@ public class DrawerListAdapter extends BaseAdapter {
 		return null;
 	}
 	
-	private void updateStrobePeriod(int period) { 
-		//TODO
+	private void updateStrobePeriod(int period) {
+		act.mStrobePeriod = period;
 	}
 
 }

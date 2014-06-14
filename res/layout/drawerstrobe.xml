@@ -6,7 +6,7 @@
     android:paddingTop="15dp" >
 
     <Switch
-        android:id="@+id/textView1"
+        android:id="@+id/switchStrobe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

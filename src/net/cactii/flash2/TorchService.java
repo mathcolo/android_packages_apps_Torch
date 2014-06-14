@@ -49,24 +49,28 @@ public class TorchService extends Service {
     };
 
     private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            final FlashDevice flash = FlashDevice.instance(TorchService.this);
+    	@Override
+    	public void handleMessage(Message msg) {
+    		final FlashDevice flash = FlashDevice.instance(TorchService.this);
 
-            switch (msg.what) {
-                case MSG_UPDATE_FLASH:
-                    flash.setFlashMode(mFlashMode);
-                    removeMessages(MSG_UPDATE_FLASH);
-                    sendEmptyMessageDelayed(MSG_UPDATE_FLASH, 100);
-                    break;
-                case MSG_DO_STROBE:
-                    mStrobeOn = !mStrobeOn;
-                    removeMessages(MSG_UPDATE_FLASH);
-                    sendEmptyMessage(MSG_UPDATE_FLASH);
-                    sendEmptyMessageDelayed(MSG_DO_STROBE, mStrobePeriod);
-                    break;
-            }
-        }
+    		switch (msg.what) {
+    		case MSG_UPDATE_FLASH:
+    			if (mStrobePeriod != 0) {
+    				flash.setFlashMode(mStrobeOn ? mFlashMode : FlashDevice.STROBE);
+    			} else {
+    				flash.setFlashMode(mFlashMode);
+    			}
+    			removeMessages(MSG_UPDATE_FLASH);
+    			sendEmptyMessageDelayed(MSG_UPDATE_FLASH, 100);
+    			break;
+    		case MSG_DO_STROBE:
+    			mStrobeOn = !mStrobeOn;
+    			removeMessages(MSG_UPDATE_FLASH);
+    			sendEmptyMessage(MSG_UPDATE_FLASH);
+    			sendEmptyMessageDelayed(MSG_DO_STROBE, mStrobePeriod);
+    			break;
+    		}
+    	}
     };
 
     @Override
@@ -81,6 +85,14 @@ public class TorchService extends Service {
         mFlashMode = intent.getBooleanExtra("bright", false)
                 ? FlashDevice.DEATH_RAY : FlashDevice.ON;
 
+        if (intent.getBooleanExtra("strobe", false)) {
+            mStrobePeriod = intent.getIntExtra("period", 200);
+            mStrobeOn = false;
+            mHandler.sendEmptyMessage(MSG_DO_STROBE);
+        } else {
+            mStrobePeriod = 0;
+        }
+        
         mHandler.sendEmptyMessage(MSG_UPDATE_FLASH);
 
         startForeground(getString(R.string.app_name).hashCode(), getNotification());
