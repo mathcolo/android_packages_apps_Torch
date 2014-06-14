@@ -21,6 +21,8 @@ package net.cactii.flash2;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,8 +33,20 @@ public class TorchService extends Service {
     private static final String MSG_TAG = "TorchRoot";
 
     private int mFlashMode;
+    private int mStrobePeriod;
+    private boolean mStrobeOn;
 
     private static final int MSG_UPDATE_FLASH = 1;
+    private static final int MSG_DO_STROBE = 2;
+    
+    private final BroadcastReceiver mStrobeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mHandler.removeMessages(MSG_DO_STROBE);
+            mStrobePeriod = intent.getIntExtra("period", 200);
+            mHandler.sendEmptyMessage(MSG_DO_STROBE);
+        }
+    };
 
     private final Handler mHandler = new Handler() {
         @Override
@@ -44,6 +58,12 @@ public class TorchService extends Service {
                     flash.setFlashMode(mFlashMode);
                     removeMessages(MSG_UPDATE_FLASH);
                     sendEmptyMessageDelayed(MSG_UPDATE_FLASH, 100);
+                    break;
+                case MSG_DO_STROBE:
+                    mStrobeOn = !mStrobeOn;
+                    removeMessages(MSG_UPDATE_FLASH);
+                    sendEmptyMessage(MSG_UPDATE_FLASH);
+                    sendEmptyMessageDelayed(MSG_DO_STROBE, mStrobePeriod);
                     break;
             }
         }
