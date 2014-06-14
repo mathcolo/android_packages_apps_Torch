@@ -170,6 +170,7 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				if(view.getTag().equals("About")) {
+					mDrawerLayout.closeDrawers();
 					openAboutDialog();
 				}
 				
