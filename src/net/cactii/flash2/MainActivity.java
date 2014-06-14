@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -256,6 +255,7 @@ public class MainActivity extends Activity {
 
     public void openBrightDialog(final CompoundButton ref) {
         LayoutInflater inflater = LayoutInflater.from(this);
+        mDrawerLayout.closeDrawers();
         View view = inflater.inflate(R.layout.brightwarn, null);
 
         new AlertDialog.Builder(this)
