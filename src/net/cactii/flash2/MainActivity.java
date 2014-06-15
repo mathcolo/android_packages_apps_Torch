@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
     private Context mContext;
 
     private boolean mBright;
-    private boolean mTorchOn;
+    public boolean mTorchOn;
     
     // Period of strobe, in milliseconds
     public int mStrobePeriod;
@@ -152,6 +152,9 @@ public class MainActivity extends Activity {
         mLightbulb.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+            	
+            	mTorchOn = !mTorchOn;
+            	
                 Intent intent = new Intent(TorchSwitch.TOGGLE_FLASHLIGHT);
                 intent.putExtra("bright", mBright);
                 sendBroadcast(intent);
