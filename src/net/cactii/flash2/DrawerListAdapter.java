@@ -3,13 +3,11 @@ package net.cactii.flash2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
@@ -56,7 +54,6 @@ public class DrawerListAdapter extends BaseAdapter {
 
 				@Override
 				public void onCheckedChanged(CompoundButton arg0, boolean on) {
-					// TODO Auto-generated method stub
 					if(on)act.openBrightDialog((Switch) arg0);
 					else act.mPrefs.edit().putBoolean("bright", false).commit();
 					
