@@ -78,10 +78,7 @@ public class DrawerListAdapter extends BaseAdapter {
 			CompoundButton switchStrobe = (CompoundButton) view.findViewById(R.id.switchStrobe);
 			switchStrobe.setChecked(isStrobing);
 			
-			if(act.mTorchOn) {
-				seekbar.setEnabled(false);
-				switchStrobe.setEnabled(false);
-			}
+			if(act.mTorchOn) switchStrobe.setEnabled(false);
 			
 			switchStrobe.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
