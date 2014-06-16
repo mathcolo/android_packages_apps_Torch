@@ -6,7 +6,7 @@
     android:paddingTop="15dp" >
 
     <Switch
-        android:id="@+id/highBrightnessCheckbox"
+        android:id="@+id/highBrightnessSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

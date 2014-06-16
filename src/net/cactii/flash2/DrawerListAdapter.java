@@ -48,7 +48,7 @@ public class DrawerListAdapter extends BaseAdapter {
 		if(position == 0) {
 			View view = inflater.inflate(R.layout.drawerhighbrightness, null);
 			
-			CompoundButton box = (CompoundButton) view.findViewById(R.id.highBrightnessCheckbox);
+			CompoundButton box = (CompoundButton) view.findViewById(R.id.highBrightnessSwitch);
 			box.setChecked(act.mPrefs.getBoolean("bright", false));
 			
 			if(act.mTorchOn) box.setEnabled(false);
@@ -63,6 +63,28 @@ public class DrawerListAdapter extends BaseAdapter {
 				}
 				
 			});
+			
+			box.setOnTouchListener(new ListView.OnTouchListener() 
+	        {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					int action = event.getAction();
+			        switch (action) 
+			        {
+			        case MotionEvent.ACTION_DOWN:
+			            v.getParent().requestDisallowInterceptTouchEvent(true);
+			            break;
+
+			        case MotionEvent.ACTION_UP:
+			            v.getParent().requestDisallowInterceptTouchEvent(false);
+			            break;
+			        }
+
+			        v.onTouchEvent(event);
+			        return true;
+				}
+	        });
 			
 			return view;
 		}
@@ -131,6 +153,29 @@ public class DrawerListAdapter extends BaseAdapter {
 			        return true;
 				}
 	        });
+	        
+	        switchStrobe.setOnTouchListener(new ListView.OnTouchListener() 
+	        {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					int action = event.getAction();
+			        switch (action) 
+			        {
+			        case MotionEvent.ACTION_DOWN:
+			            v.getParent().requestDisallowInterceptTouchEvent(true);
+			            break;
+
+			        case MotionEvent.ACTION_UP:
+			            v.getParent().requestDisallowInterceptTouchEvent(false);
+			            break;
+			        }
+
+			        v.onTouchEvent(event);
+			        return true;
+				}
+	        });
+	        
 			return view;
 		}
 		
