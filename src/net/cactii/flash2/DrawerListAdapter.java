@@ -27,7 +27,7 @@ public class DrawerListAdapter extends BaseAdapter {
 	
 	@Override
 	public int getCount() {
-		if(act.getResources().getBoolean(R.bool.hasHighBrightness))return 3;
+		if(act.mHasBrightSetting)return 3;
 		return 2;
 	}
 

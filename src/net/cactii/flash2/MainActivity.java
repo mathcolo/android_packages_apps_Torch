@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
     // Preferences
     public SharedPreferences mPrefs;
 
-    private boolean mHasBrightSetting = false;
+    public boolean mHasBrightSetting = false;
 
     private float mFullScreenScale;
 
