@@ -43,9 +43,13 @@ public class TorchService extends Service {
     private final BroadcastReceiver mStrobeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mHandler.removeMessages(MSG_DO_STROBE);
+        	
+        	//The handler will already be using mStrobePeriod, so we don't need to flush the handler and start it over again
+        	//It will already be taking in a new period when it's set here
+        	
+            //mHandler.removeMessages(MSG_DO_STROBE);
             mStrobePeriod = intent.getIntExtra("period", 200);
-            mHandler.sendEmptyMessage(MSG_DO_STROBE);
+            //mHandler.sendEmptyMessage(MSG_DO_STROBE);
         }
     };
 
