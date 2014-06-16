@@ -109,16 +109,19 @@ public class DrawerListAdapter extends BaseAdapter {
 				
 			});
 	
-			seekbar.setProgress(400 - act.mStrobePeriod);		
+			seekbar.setProgress(400 - act.mStrobePeriod);
+			
 
 			seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {		
 			@Override		
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {		
 				updateStrobePeriod(Math.max(20, 401 - progress));		
 
-				Intent intent = new Intent("net.cactii.flash2.SET_STROBE");		
-				intent.putExtra("period", act.mStrobePeriod);	
-				act.sendBroadcast(intent);		
+				if(act.mTorchOn && act.mPrefs.getBoolean("strobe", false)) {		
+					Intent intent = new Intent("net.cactii.flash2.SET_STROBE");		
+					intent.putExtra("period", act.mStrobePeriod);	
+					act.sendBroadcast(intent);	
+				}
 			}		
 
 			@Override		

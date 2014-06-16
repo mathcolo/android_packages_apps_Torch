@@ -45,7 +45,7 @@ public class TorchSwitch extends BroadcastReceiver {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             boolean bright = intent.getBooleanExtra("bright", prefs.getBoolean("bright", false));
             boolean strobe = intent.getBooleanExtra("strobe", prefs.getBoolean("strobe", false));
-            int period = intent.getIntExtra("period", 200);
+            int period = intent.getIntExtra("period", prefs.getInt("period", 200));
 
             Intent i = new Intent(context, TorchService.class);
             if (this.torchServiceRunning(context)) {
