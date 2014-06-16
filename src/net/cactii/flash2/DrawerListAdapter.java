@@ -93,9 +93,7 @@ public class DrawerListAdapter extends BaseAdapter {
 		{
 			View view = inflater.inflate(R.layout.drawerstrobe, null);
 			SeekBar seekbar = (SeekBar) view.findViewById(R.id.slider);
-			
-			//act.mStrobePeriod = 100;
-			
+
 			final boolean isStrobing = act.mPrefs.getBoolean("strobe", false);
 			CompoundButton switchStrobe = (CompoundButton) view.findViewById(R.id.switchStrobe);
 			switchStrobe.setChecked(isStrobing);
@@ -129,6 +127,7 @@ public class DrawerListAdapter extends BaseAdapter {
 
 			@Override		
 			public void onStopTrackingTouch(SeekBar seekBar) {		
+				act.mPrefs.edit().putInt("period", act.mStrobePeriod).commit();
 			}	            
 			});
 			

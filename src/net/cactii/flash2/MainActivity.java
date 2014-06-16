@@ -144,6 +144,8 @@ public class MainActivity extends Activity {
         // Preferences
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mBright = mPrefs.getBoolean("bright", false);
+        
+        mStrobePeriod = mPrefs.getInt("period", 100);
 
         mHasBrightSetting = getResources().getBoolean(R.bool.hasHighBrightness) &&
                 !getResources().getBoolean(R.bool.useCameraInterface);
