@@ -20,6 +20,7 @@
 
     <style name="AppTheme" parent="android:Theme.Holo">
         <item name="android:actionBarStyle">@style/ActionBarTheme</item>
+        <item name="android:actionBarItemBackground">@drawable/actionbar_color</item>
     </style>
 
     <style name="AppTheme.Translucent" parent="AppTheme">
