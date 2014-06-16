@@ -24,6 +24,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -94,6 +95,8 @@ public class TorchService extends Service {
         }
         
         mHandler.sendEmptyMessage(MSG_UPDATE_FLASH);
+        
+        registerReceiver(mStrobeReceiver, new IntentFilter("net.cactii.flash2.SET_STROBE"));
 
         startForeground(getString(R.string.app_name).hashCode(), getNotification());
         updateState(true);
