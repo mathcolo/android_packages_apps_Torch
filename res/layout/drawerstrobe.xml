@@ -28,6 +28,7 @@
         android:layout_alignBottom="@+id/switchStrobe"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="13dp"
+        android:max="400"
         android:paddingBottom="30dp" />
 
 </RelativeLayout>
