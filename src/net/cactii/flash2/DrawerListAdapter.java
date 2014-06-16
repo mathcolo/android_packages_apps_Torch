@@ -50,6 +50,9 @@ public class DrawerListAdapter extends BaseAdapter {
 			
 			CompoundButton box = (CompoundButton) view.findViewById(R.id.highBrightnessCheckbox);
 			box.setChecked(act.mPrefs.getBoolean("bright", false));
+			
+			if(act.mTorchOn) box.setEnabled(false);
+			
 			box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 				@Override
@@ -74,6 +77,12 @@ public class DrawerListAdapter extends BaseAdapter {
 			final boolean isStrobing = act.mPrefs.getBoolean("strobe", false);
 			CompoundButton switchStrobe = (CompoundButton) view.findViewById(R.id.switchStrobe);
 			switchStrobe.setChecked(isStrobing);
+			
+			if(act.mTorchOn) {
+				seekbar.setEnabled(false);
+				switchStrobe.setEnabled(false);
+			}
+			
 			switchStrobe.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 				@Override
