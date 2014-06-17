@@ -43,13 +43,14 @@ public class TorchService extends Service {
     private final BroadcastReceiver mStrobeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        	
-        	//The handler will already be using mStrobePeriod, so we don't need to flush the handler and start it over again
-        	//It will already be taking in a new period when it's set here
-        	
-            //mHandler.removeMessages(MSG_DO_STROBE);
+
+            // The handler will already be using mStrobePeriod, so we don't need
+            // to flush the handler and start it over again
+            // It will already be taking in a new period when it's set here
+
+            // mHandler.removeMessages(MSG_DO_STROBE);
             mStrobePeriod = intent.getIntExtra("period", 200);
-            //mHandler.sendEmptyMessage(MSG_DO_STROBE);
+            // mHandler.sendEmptyMessage(MSG_DO_STROBE);
         }
     };
 
@@ -59,21 +60,22 @@ public class TorchService extends Service {
             final FlashDevice flash = FlashDevice.instance(TorchService.this);
 
             switch (msg.what) {
-                case MSG_UPDATE_FLASH:
-                    if (mStrobePeriod != 0) {
-                        flash.setFlashMode(mStrobeOn ? mFlashMode : FlashDevice.STROBE);
-                    } else {
-                        flash.setFlashMode(mFlashMode);
-                    }
-                    removeMessages(MSG_UPDATE_FLASH);
-                    sendEmptyMessageDelayed(MSG_UPDATE_FLASH, 100);
-                    break;
-                case MSG_DO_STROBE:
-                    mStrobeOn = !mStrobeOn;
-                    removeMessages(MSG_UPDATE_FLASH);
-                    sendEmptyMessage(MSG_UPDATE_FLASH);
-                    sendEmptyMessageDelayed(MSG_DO_STROBE, mStrobePeriod);
-                    break;
+            case MSG_UPDATE_FLASH:
+                if (mStrobePeriod != 0) {
+                    flash.setFlashMode(mStrobeOn ? mFlashMode
+                            : FlashDevice.STROBE);
+                } else {
+                    flash.setFlashMode(mFlashMode);
+                }
+                removeMessages(MSG_UPDATE_FLASH);
+                sendEmptyMessageDelayed(MSG_UPDATE_FLASH, 100);
+                break;
+            case MSG_DO_STROBE:
+                mStrobeOn = !mStrobeOn;
+                removeMessages(MSG_UPDATE_FLASH);
+                sendEmptyMessage(MSG_UPDATE_FLASH);
+                sendEmptyMessageDelayed(MSG_DO_STROBE, mStrobePeriod);
+                break;
             }
         }
     };
@@ -87,8 +89,8 @@ public class TorchService extends Service {
             return START_NOT_STICKY;
         }
 
-        mFlashMode = intent.getBooleanExtra("bright", false)
-                ? FlashDevice.DEATH_RAY : FlashDevice.ON;
+        mFlashMode = intent.getBooleanExtra("bright", false) ? FlashDevice.DEATH_RAY
+                : FlashDevice.ON;
 
         if (intent.getBooleanExtra("strobe", false)) {
             mStrobePeriod = intent.getIntExtra("period", 200);
@@ -99,10 +101,11 @@ public class TorchService extends Service {
         }
         mHandler.sendEmptyMessage(MSG_UPDATE_FLASH);
 
-        registerReceiver(mStrobeReceiver, new IntentFilter("net.cactii.flash2.SET_STROBE"));
+        registerReceiver(mStrobeReceiver, new IntentFilter(
+                "net.cactii.flash2.SET_STROBE"));
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this,
-                0, new Intent(this, MainActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, MainActivity.class), 0);
         PendingIntent turnOffIntent = PendingIntent.getBroadcast(this, 0,
                 new Intent(TorchSwitch.TOGGLE_FLASHLIGHT), 0);
 
@@ -114,10 +117,11 @@ public class TorchService extends Service {
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .addAction(R.drawable.ic_appwidget_torch_off,
-                    getString(R.string.not_torch_toggle), turnOffIntent)
+                        getString(R.string.not_torch_toggle), turnOffIntent)
                 .build();
 
-        startForeground(getString(R.string.app_name).hashCode(), getNotification());
+        startForeground(getString(R.string.app_name).hashCode(),
+                getNotification());
         updateState(true);
 
         return START_STICKY;
@@ -134,20 +138,20 @@ public class TorchService extends Service {
     }
 
     private Notification getNotification() {
-        PendingIntent contentIntent = PendingIntent.getActivity(this,
-                0, new Intent(this, MainActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, MainActivity.class), 0);
         PendingIntent turnOffIntent = PendingIntent.getBroadcast(this, 0,
                 new Intent(TorchSwitch.TOGGLE_FLASHLIGHT), 0);
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(getString(R.string.not_torch_title))
-                .setContentIntent(contentIntent) 
+                .setContentIntent(contentIntent)
                 .setAutoCancel(false)
                 .setOnlyAlertOnce(true)
                 .setOngoing(true)
                 .addAction(R.drawable.ic_appwidget_torch_off_small,
-                        getString(R.string.not_torch_toggle), turnOffIntent) 
-                .build(); 
+                        getString(R.string.not_torch_toggle), turnOffIntent)
+                .build();
         return notification;
     }
 

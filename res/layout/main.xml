@@ -16,7 +16,6 @@
      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
      MA  02110-1301, USA.
 -->
-
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -33,14 +32,12 @@
             android:layout_height="@dimen/button_size"
             android:layout_gravity="center"
             android:src="@drawable/bg_color" />
-
         <ImageView
             android:id="@+id/lightbulb"
             android:layout_width="@dimen/lighbulb_size"
             android:layout_height="@dimen/lighbulb_size"
             android:layout_gravity="center"
             android:src="@drawable/ic_lightbulb" />
-
         <ImageView
             android:id="@+id/lightbulb_on"
             android:layout_width="@dimen/lighbulb_size"
@@ -51,7 +48,6 @@
     </FrameLayout>
 
     <!-- The navigation drawer -->
-
     <ListView
         android:id="@+id/left_drawer"
         android:layout_width="260dp"

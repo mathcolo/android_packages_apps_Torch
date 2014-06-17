@@ -22,10 +22,8 @@
     <color name="text_color">#FFFFFFFF</color>
     <color name="text_warn">#FFff8080</color>
     <color name="bg_color">#FF00b1e5</color>
-    
     <!-- 15% opacity black -->
     <color name="bg_15_alpha">#26000000</color>
-    
     <!-- 50% opacity black -->
     <color name="bg_50_alpha">#80000000</color>
 </resources>

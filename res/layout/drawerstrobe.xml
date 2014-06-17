@@ -20,7 +20,6 @@
         android:textColorHint="@android:color/white"
         android:textColorLink="@android:color/holo_blue_light"
         android:textSize="22sp" />
-
     <SeekBar
         android:id="@+id/slider"
         android:layout_width="match_parent"

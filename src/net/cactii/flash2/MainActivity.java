@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
 
     private boolean mBright;
     public boolean mTorchOn;
-    
+
     // Period of strobe, in milliseconds
     public int mStrobePeriod;
 
@@ -98,14 +98,11 @@ public class MainActivity extends Activity {
             mFullScreenScale = getMeasureScale();
         }
         getActionBar().hide();
-        mBackgroundShape.animate()
-                .scaleX(mFullScreenScale)
+        mBackgroundShape.animate().scaleX(mFullScreenScale)
                 .scaleY(mFullScreenScale)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setDuration(ANIMATION_DURATION);
-        mLightbulbOn.animate()
-                .alpha(1f)
-                .setDuration(ANIMATION_DURATION);
+        mLightbulbOn.animate().alpha(1f).setDuration(ANIMATION_DURATION);
     }
 
     private void onFlashOff() {
@@ -113,14 +110,10 @@ public class MainActivity extends Activity {
             return;
         }
         getActionBar().show();
-        mBackgroundShape.animate()
-                .scaleX(1)
-                .scaleY(1)
+        mBackgroundShape.animate().scaleX(1).scaleY(1)
                 .setInterpolator(new OvershootInterpolator())
                 .setDuration(ANIMATION_DURATION);
-        mLightbulbOn.animate()
-                .alpha(0f)
-                .setDuration(ANIMATION_DURATION);
+        mLightbulbOn.animate().alpha(0f).setDuration(ANIMATION_DURATION);
     }
 
     /** Called when the activity is first created. */
@@ -144,51 +137,46 @@ public class MainActivity extends Activity {
         // Preferences
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mBright = mPrefs.getBoolean("bright", false);
-        
         mStrobePeriod = mPrefs.getInt("period", 100);
 
-        mHasBrightSetting = getResources().getBoolean(R.bool.hasHighBrightness) &&
-                !getResources().getBoolean(R.bool.useCameraInterface);
+        mHasBrightSetting = getResources().getBoolean(R.bool.hasHighBrightness)
+                && !getResources().getBoolean(R.bool.useCameraInterface);
 
         mLightbulb.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	
-            	mTorchOn = !mTorchOn;
-            	
+
+                mTorchOn = !mTorchOn;
+
                 Intent intent = new Intent(TorchSwitch.TOGGLE_FLASHLIGHT);
                 intent.putExtra("bright", mBright);
                 sendBroadcast(intent);
             }
         });
-        
+
         // Handle Navigation Drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.navbar_shadow, Gravity.LEFT);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        
+
         mDrawerList.setAdapter(new DrawerListAdapter(MainActivity.this));
         mDrawerList.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				if(view.getTag().equals("About")) {
-					mDrawerLayout.closeDrawers();
-					openAboutDialog();
-				}
-				
-			}
-        	
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                if (view.getTag().equals("About")) {
+                    mDrawerLayout.closeDrawers();
+                    openAboutDialog();
+                }
+
+            }
+
         });
-        
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                R.drawable.ic_drawer,
-                R.string.drawer_open,
-                R.string.drawer_close
-                );
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.drawer_open,
+                R.string.drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -210,7 +198,8 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         updateWidget();
-        registerReceiver(mStateReceiver, new IntentFilter(TorchSwitch.TORCH_STATE_CHANGED));
+        registerReceiver(mStateReceiver, new IntentFilter(
+                TorchSwitch.TORCH_STATE_CHANGED));
         super.onResume();
     }
 
@@ -221,11 +210,10 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-    	
-    	if (mDrawerToggle.onOptionsItemSelected(menuItem)) {
+
+        if (mDrawerToggle.onOptionsItemSelected(menuItem)) {
             return true;
         }
-   
         return false;
     }
 
@@ -251,10 +239,8 @@ public class MainActivity extends Activity {
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.aboutview, null);
 
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.about_title)
-                .setView(view)
-                .setNegativeButton(R.string.about_close, null)
+        new AlertDialog.Builder(this).setTitle(R.string.about_title)
+                .setView(view).setNegativeButton(R.string.about_close, null)
                 .show();
     }
 
@@ -266,25 +252,32 @@ public class MainActivity extends Activity {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.warning_label)
                 .setView(view)
-                .setNegativeButton(R.string.brightwarn_negative, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    	mBright = false;
-                    	mPrefs.edit().putBoolean("bright", false).commit();
-                    	
-                    	if(ref != null)ref.setChecked(false);
-                    }
-                })
-                .setPositiveButton(R.string.brightwarn_accept, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        mBright = true;
-                        mPrefs.edit().putBoolean("bright", true).commit();
-                        
-                        if(ref != null)ref.setChecked(true);
-                    }
-                })
-                .show();
+                .setNegativeButton(R.string.brightwarn_negative,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int whichButton) {
+                                mBright = false;
+                                mPrefs.edit().putBoolean("bright", false)
+                                        .commit();
+
+                                if (ref != null)
+                                    ref.setChecked(false);
+                            }
+                        })
+                .setPositiveButton(R.string.brightwarn_accept,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int whichButton) {
+                                mBright = true;
+                                mPrefs.edit().putBoolean("bright", true)
+                                        .commit();
+
+                                if (ref != null)
+                                    ref.setChecked(true);
+                            }
+                        }).show();
     }
 
     private void updateWidget() {
@@ -298,8 +291,8 @@ public class MainActivity extends Activity {
         display.getMetrics(outMetrics);
 
         float displayHeight = outMetrics.heightPixels;
-        float displayWidth  = outMetrics.widthPixels;
-        return (Math.max(displayHeight, displayWidth) /
-                mContext.getResources().getDimensionPixelSize(R.dimen.button_size)) * 2;
+        float displayWidth = outMetrics.widthPixels;
+        return (Math.max(displayHeight, displayWidth) / mContext.getResources()
+                .getDimensionPixelSize(R.dimen.button_size)) * 2;
     }
 }

@@ -16,182 +16,189 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Switch;
 
 public class DrawerListAdapter extends BaseAdapter {
-	
-	private static LayoutInflater inflater = null;
-	private MainActivity act;
 
-	public DrawerListAdapter(Activity act) {
-		this.act = (MainActivity) act;
-		inflater = (LayoutInflater) act.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	}
-	
-	@Override
-	public int getCount() {
-		if(act.mHasBrightSetting)return 3;
-		return 2;
-	}
+    private static LayoutInflater inflater = null;
+    private MainActivity act;
 
-	@Override
-	public Object getItem(int position) {
-		return position;
-	}
+    public DrawerListAdapter(Activity act) {
+        this.act = (MainActivity) act;
+        inflater = (LayoutInflater) act
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public int getCount() {
+        if (act.mHasBrightSetting)
+            return 3;
+        return 2;
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		if(this.getCount() == 2)position++;
-		
-		if(position == 0) {
-			View view = inflater.inflate(R.layout.drawerhighbrightness, null);
-			
-			CompoundButton box = (CompoundButton) view.findViewById(R.id.highBrightnessSwitch);
-			box.setChecked(act.mPrefs.getBoolean("bright", false));
-			
-			if(act.mTorchOn) box.setEnabled(false);
-			
-			box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+    @Override
+    public Object getItem(int position) {
+        return position;
+    }
 
-				@Override
-				public void onCheckedChanged(CompoundButton arg0, boolean on) {
-					if(on)act.openBrightDialog((Switch) arg0);
-					else act.mPrefs.edit().putBoolean("bright", false).commit();
-					
-				}
-				
-			});
-			
-			box.setOnTouchListener(new ListView.OnTouchListener() 
-	        {
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					int action = event.getAction();
-			        switch (action) 
-			        {
-			        case MotionEvent.ACTION_DOWN:
-			            v.getParent().requestDisallowInterceptTouchEvent(true);
-			            break;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (this.getCount() == 2)
+            position++;
 
-			        case MotionEvent.ACTION_UP:
-			            v.getParent().requestDisallowInterceptTouchEvent(false);
-			            break;
-			        }
+        if (position == 0) {
+            View view = inflater.inflate(R.layout.drawerhighbrightness, null);
 
-			        v.onTouchEvent(event);
-			        return true;
-				}
-	        });
-			
-			return view;
-		}
-		
-		else if(position == 1)
-		{
-			View view = inflater.inflate(R.layout.drawerstrobe, null);
-			SeekBar seekbar = (SeekBar) view.findViewById(R.id.slider);
+            CompoundButton box = (CompoundButton) view
+                    .findViewById(R.id.highBrightnessSwitch);
+            box.setChecked(act.mPrefs.getBoolean("bright", false));
 
-			final boolean isStrobing = act.mPrefs.getBoolean("strobe", false);
-			CompoundButton switchStrobe = (CompoundButton) view.findViewById(R.id.switchStrobe);
-			switchStrobe.setChecked(isStrobing);
-			
-			if(act.mTorchOn) switchStrobe.setEnabled(false);
-			
-			switchStrobe.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            if (act.mTorchOn)
+                box.setEnabled(false);
 
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					act.mPrefs.edit().putBoolean("strobe", isChecked).commit();
-				}
-				
-			});
-	
-			seekbar.setProgress(400 - act.mStrobePeriod);
-			
+            box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {		
-			@Override		
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {		
-				updateStrobePeriod(Math.max(20, 401 - progress));		
+                @Override
+                public void onCheckedChanged(CompoundButton arg0, boolean on) {
+                    if (on)
+                        act.openBrightDialog((Switch) arg0);
+                    else
+                        act.mPrefs.edit().putBoolean("bright", false).commit();
 
-				if(act.mTorchOn && act.mPrefs.getBoolean("strobe", false)) {		
-					Intent intent = new Intent("net.cactii.flash2.SET_STROBE");		
-					intent.putExtra("period", act.mStrobePeriod);	
-					act.sendBroadcast(intent);	
-				}
-			}		
+                }
 
-			@Override		
-			public void onStartTrackingTouch(SeekBar seekBar) {		
-			}		
+            });
 
-			@Override		
-			public void onStopTrackingTouch(SeekBar seekBar) {		
-				act.mPrefs.edit().putInt("period", act.mStrobePeriod).commit();
-			}	            
-			});
-			
-	        seekbar.setOnTouchListener(new ListView.OnTouchListener() 
-	        {
+            box.setOnTouchListener(new ListView.OnTouchListener() {
 
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					int action = event.getAction();
-			        switch (action) 
-			        {
-			        case MotionEvent.ACTION_DOWN:
-			            v.getParent().requestDisallowInterceptTouchEvent(true);
-			            break;
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getAction();
+                    switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
 
-			        case MotionEvent.ACTION_UP:
-			            v.getParent().requestDisallowInterceptTouchEvent(false);
-			            break;
-			        }
+                    case MotionEvent.ACTION_UP:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                    }
 
-			        v.onTouchEvent(event);
-			        return true;
-				}
-	        });
-	        
-	        switchStrobe.setOnTouchListener(new ListView.OnTouchListener() 
-	        {
+                    v.onTouchEvent(event);
+                    return true;
+                }
+            });
 
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					int action = event.getAction();
-			        switch (action) 
-			        {
-			        case MotionEvent.ACTION_DOWN:
-			            v.getParent().requestDisallowInterceptTouchEvent(true);
-			            break;
+            return view;
+        }
 
-			        case MotionEvent.ACTION_UP:
-			            v.getParent().requestDisallowInterceptTouchEvent(false);
-			            break;
-			        }
+        else if (position == 1) {
+            View view = inflater.inflate(R.layout.drawerstrobe, null);
+            SeekBar seekbar = (SeekBar) view.findViewById(R.id.slider);
 
-			        v.onTouchEvent(event);
-			        return true;
-				}
-	        });
-	        
-			return view;
-		}
-		
-		else if(position == 2) {
-			View view = inflater.inflate(R.layout.drawerabout, null);
-			view.setTag("About");
-			return view;
-		}
-		
-		return null;
-	}
-	
-	private void updateStrobePeriod(int period) {
-		act.mStrobePeriod = period;
-	}
+            final boolean isStrobing = act.mPrefs.getBoolean("strobe", false);
+            CompoundButton switchStrobe = (CompoundButton) view
+                    .findViewById(R.id.switchStrobe);
+            switchStrobe.setChecked(isStrobing);
+
+            if (act.mTorchOn)
+                switchStrobe.setEnabled(false);
+
+            switchStrobe
+                    .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView,
+                                boolean isChecked) {
+                            act.mPrefs.edit().putBoolean("strobe", isChecked)
+                                    .commit();
+                        }
+
+                    });
+
+            seekbar.setProgress(400 - act.mStrobePeriod);
+
+            seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress,
+                        boolean fromUser) {
+                    updateStrobePeriod(Math.max(20, 401 - progress));
+
+                    if (act.mTorchOn && act.mPrefs.getBoolean("strobe", false)) {
+                        Intent intent = new Intent(
+                                "net.cactii.flash2.SET_STROBE");
+                        intent.putExtra("period", act.mStrobePeriod);
+                        act.sendBroadcast(intent);
+                    }
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    act.mPrefs.edit().putInt("period", act.mStrobePeriod)
+                            .commit();
+                }
+            });
+
+            seekbar.setOnTouchListener(new ListView.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getAction();
+                    switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                    }
+
+                    v.onTouchEvent(event);
+                    return true;
+                }
+            });
+
+            switchStrobe.setOnTouchListener(new ListView.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getAction();
+                    switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                    }
+
+                    v.onTouchEvent(event);
+                    return true;
+                }
+            });
+
+            return view;
+        }
+
+        else if (position == 2) {
+            View view = inflater.inflate(R.layout.drawerabout, null);
+            view.setTag("About");
+            return view;
+        }
+
+        return null;
+    }
+
+    private void updateStrobePeriod(int period) {
+        act.mStrobePeriod = period;
+    }
 
 }
