@@ -21,8 +21,12 @@ package net.cactii.flash2;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.ITorchService;
+import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.util.Log;
 
 import net.cactii.flash2.R;
@@ -61,7 +65,14 @@ public class FlashDevice {
     private int mFlashMode = OFF;
 
     private Camera mCamera = null;
+    private ITorchService mTorchService;
     private SurfaceTexture mSurfaceTexture = null;
+
+    public static class InitializationException extends RuntimeException {
+        public InitializationException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 
     private FlashDevice(Context context) {
         mValueOff = context.getResources().getInteger(R.integer.valueOff);
@@ -73,6 +84,9 @@ public class FlashDevice {
         mFlashDeviceLuminosity = context.getResources().getString(R.string.flashDeviceLuminosity);
         mFlashDeviceLuminosity2 = context.getResources().getString(R.string.flashDeviceLuminosity2);
         mUseCameraInterface = context.getResources().getBoolean(R.bool.useCameraInterface);
+
+        IBinder torchBinder = ServiceManager.getService(Context.TORCH_SERVICE);
+        mTorchService = ITorchService.Stub.asInterface(torchBinder);
 
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Torch");
@@ -86,7 +100,7 @@ public class FlashDevice {
     }
 
     public synchronized void setFlashMode(int mode) {
-	Log.d(MSG_TAG, "setFlashMode " + mode);
+        Log.d(MSG_TAG, "setFlashMode " + mode);
 
         if (mFlashMode == mode) return;
 
@@ -117,7 +131,7 @@ public class FlashDevice {
             }
             if (mUseCameraInterface) {
                 if (mCamera == null) {
-                    mCamera = Camera.open();
+                    mCamera = initializeCamera();
                 }
                 if (value == OFF) {
                     Camera.Parameters params = mCamera.getParameters();
@@ -262,8 +276,38 @@ public class FlashDevice {
             if (mWakeLock.isHeld()) {
                 mWakeLock.release();
             }
-            throw new RuntimeException("Can't open flash device", e);
+            throw new InitializationException("Can't open flash device", e);
         }
+    }
+
+    private static int findBackFacingCamera() {
+        int numberOfCameras = Camera.getNumberOfCameras();
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.getCameraInfo(i, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private Camera initializeCamera() {
+        int cameraId = findBackFacingCamera();
+        if (cameraId < 0) {
+            Log.wtf(MSG_TAG, "No back facing camera found");
+            throw new InitializationException("No camera available", null);
+        }
+        // disable torch
+        boolean result = false;
+        try {
+            result = mTorchService.onStartingTorch(cameraId);
+        } catch (RemoteException e) {
+        }
+        if (!result) {
+            throw new InitializationException("Camera is busy", null);
+        }
+        return Camera.open(cameraId);
     }
 
     public synchronized int getFlashMode() {
