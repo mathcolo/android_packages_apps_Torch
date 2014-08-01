@@ -46,9 +46,13 @@ public class TorchSwitch extends BroadcastReceiver {
             boolean bright = intent.getBooleanExtra("bright", prefs.getBoolean("bright", false));
             boolean strobe = intent.getBooleanExtra("strobe", prefs.getBoolean("strobe", false));
             int period = intent.getIntExtra("period", prefs.getInt("period", 200));
+            boolean stop = intent.getBooleanExtra("stop", false);
 
             Intent i = new Intent(context, TorchService.class);
-            if (this.torchServiceRunning(context)) {
+            if (stop || torchServiceRunning(context)) {
+                if (stop) {
+                    FlashDevice.instance(context).setFlashMode(FlashDevice.OFF);
+                }
                 context.stopService(i);
             } else {
                 i.putExtra("bright", bright);

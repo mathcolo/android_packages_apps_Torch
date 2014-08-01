@@ -36,6 +36,8 @@ public class TorchService extends Service {
     private int mFlashMode;
     private int mStrobePeriod;
     private boolean mStrobeOn;
+    private FlashDevice mFlashDevice;
+    private boolean mUseCameraInterface;
 
     private static final int MSG_UPDATE_FLASH = 1;
     private static final int MSG_DO_STROBE = 2;
@@ -57,11 +59,10 @@ public class TorchService extends Service {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            final FlashDevice flash = FlashDevice.instance(TorchService.this);
-
+        	final FlashDevice flash = FlashDevice.instance(TorchService.this);
             switch (msg.what) {
             case MSG_UPDATE_FLASH:
-                if (mStrobePeriod != 0) {
+				if (mStrobePeriod != 0) {
                     flash.setFlashMode(mStrobeOn ? mFlashMode
                             : FlashDevice.STROBE);
                 } else {
@@ -81,6 +82,12 @@ public class TorchService extends Service {
     };
 
     @Override
+    public void onCreate() {
+        mFlashDevice = FlashDevice.instance(this);
+        mUseCameraInterface = getResources().getBoolean(R.bool.useCameraInterface);
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(MSG_TAG, "Starting torch");
 
@@ -96,6 +103,12 @@ public class TorchService extends Service {
             mStrobePeriod = intent.getIntExtra("period", 200);
             mStrobeOn = false;
             mHandler.sendEmptyMessage(MSG_DO_STROBE);
+        }
+        if (mUseCameraInterface) {
+            // Devices with camera interface don't need constant refresh, so don't do
+            // it in order to avoid the refresh from interfering with the synchronous
+            // torch shutdown when starting the camera app
+            setFlashModeOrStop();   
         } else {
             mStrobePeriod = 0;
         }
@@ -158,6 +171,15 @@ public class TorchService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    private void setFlashModeOrStop() {
+        try {
+            mFlashDevice.setFlashMode(mFlashMode);
+        } catch (FlashDevice.InitializationException e) {
+            Log.w(MSG_TAG, "Could not set flash mode " + mFlashMode, e);
+            stopSelf();
+        }
     }
 
     private void updateState(boolean on) {
