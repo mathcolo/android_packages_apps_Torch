@@ -50,7 +50,6 @@ public class FlashDevice {
     private static boolean mUseCameraInterface;
     private WakeLock mWakeLock;
 
-    public static final int STROBE    = -1;
     public static final int OFF       = 0;
     public static final int ON        = 1;
     public static final int HIGH      = 128;
@@ -107,9 +106,6 @@ public class FlashDevice {
         try {
             int value = mode;
             switch (mode) {
-                case STROBE:
-                    value = OFF;
-                    break;
                 case DEATH_RAY:
                     if (mValueDeathRay >= 0) {
                         value = mValueDeathRay;
@@ -137,14 +133,12 @@ public class FlashDevice {
                     Camera.Parameters params = mCamera.getParameters();
                     params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                     mCamera.setParameters(params);
-                    if (mode != STROBE) {
-                        mCamera.stopPreview();
-                        mCamera.release();
-                        mCamera = null;
-                        if (mSurfaceTexture != null) {
-                            mSurfaceTexture.release();
-                            mSurfaceTexture = null;
-                        }
+                    mCamera.stopPreview();
+                    mCamera.release();
+                    mCamera = null;
+                    if (mSurfaceTexture != null) {
+                        mSurfaceTexture.release();
+                        mSurfaceTexture = null;
                     }
                     if (mWakeLock.isHeld()) {
                         mWakeLock.release();
@@ -166,6 +160,11 @@ public class FlashDevice {
             } else {
                 // Devices with sysfs toggle and sysfs luminosity
                 if (mFlashDeviceLuminosity != null && mFlashDeviceLuminosity.length() > 0) {
+
+                    if (mode != OFF) {
+                        onStartTorch(-1);
+                    }
+
                     if (mFlashDeviceWriter == null) {
                         mFlashDeviceWriter = new FileWriter(mFlashDevice);
                     }
@@ -207,13 +206,6 @@ public class FlashDevice {
                                 mWakeLock.release();
                             }
                             break;
-                        case STROBE:
-                            mFlashDeviceWriter.write(String.valueOf(OFF));
-                            mFlashDeviceWriter.flush();
-                            if (!mWakeLock.isHeld()) {
-                                mWakeLock.acquire();
-                            }
-                            break;
                         case DEATH_RAY:
                             if (mValueDeathRay >= 0) {
                                 mFlashDeviceLuminosityWriter.write(String.valueOf(mValueDeathRay));
@@ -250,6 +242,11 @@ public class FlashDevice {
                             break;
                     }
                 } else {
+
+                    if (mode != OFF) {
+                        onStartTorch(-1);
+                    }
+
                     // Devices with just a sysfs toggle
                     if (mFlashDeviceWriter == null) {
                         mFlashDeviceWriter = new FileWriter(mFlashDevice);
@@ -277,6 +274,29 @@ public class FlashDevice {
                 mWakeLock.release();
             }
             throw new InitializationException("Can't open flash device", e);
+        } finally {
+            if (mode == OFF) {
+                onStopTorch();
+            }
+        }
+    }
+
+    private void onStartTorch(int cameraId) {
+        boolean result = false;
+        try {
+            result = mTorchService.onStartingTorch(cameraId);
+        } catch (RemoteException e) {
+        }
+        if (!result) {
+            throw new InitializationException("Camera is busy", null);
+        }
+    }
+
+    private void onStopTorch() {
+        try {
+            mTorchService.onStopTorch();
+        } catch (RemoteException e) {
+            // ignore
         }
     }
 
@@ -299,14 +319,7 @@ public class FlashDevice {
             throw new InitializationException("No camera available", null);
         }
         // disable torch
-        boolean result = false;
-        try {
-            result = mTorchService.onStartingTorch(cameraId);
-        } catch (RemoteException e) {
-        }
-        if (!result) {
-            throw new InitializationException("Camera is busy", null);
-        }
+        onStartTorch(cameraId);
         return Camera.open(cameraId);
     }
 
